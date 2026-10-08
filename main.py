@@ -1,26 +1,28 @@
-import math
 
-def calculate_y(x):
+from zd_1_list import task1_with_list
+from zd_2_list import task2_with_list
+from zd_1_without_a_list import task1_without_list
+from zd_2_without_a_list import task2_without_list
 
-    if x <= 0 or (2 - x) <= 0:
-        return "Ошибка: значение x выходит за пределы области определения функции."
-    x_to_x = x ** x                 # x^x
-    x_to_inv_x = x ** (1 / x)       # x^(1/x)
+def main():
+    print("=== МЕНЮ ===")
+    print("1 — Задача 1 (со списком)")
+    print("2 — Задача 1 (без списка)")
+    print("3 — Задача 2 (со списком)")
+    print("4 — Задача 2 (без списка)")
     
-    # e^(x^x) * ln(2 + x^(1/x))
-    term1 = math.exp(x_to_x) * math.log(2 + x_to_inv_x)
-    
-    # 2^x * ln(2 - x)
-    term2 = (2 ** x) * math.log(2 - x)
-    
-    # -e^(2 / x^x)
-    term3 = -math.exp(2 / x_to_x)
-    
-    y = term1 + term2 + term3
-    return y
+    choice = input("Выберите вариант (1-4): ").strip()
 
-x_value = int(input('ведите x = '))
-result = calculate_y(x_value)
+    if choice == "1":
+        task1_with_list()
+    elif choice == "2":
+        task1_without_list()
+    elif choice == "3":
+        task2_with_list()
+    elif choice == "4":
+        task2_without_list()
+    else:
+        print("Неверный выбор. Запустите программу снова и введите число от 1 до 4.")
 
-print(f"При x = {x_value} значение функции y = {result}")
-print(f"Для сравнения: аналитическое решение e*ln(3) - e^2 ≈ {math.e * math.log(3) - math.e**2}")
+if __name__ == "__main__":
+    main()

@@ -1,35 +1,30 @@
-import math
+def task2_with_list():
+    try:
+        n = int(input("Введите количество чисел N: "))
+        if n < 4:
+            print("Для задачи требуется минимум 4 числа.")
+            return
+    except ValueError:
+        print("Ошибка ввода N.")
+        return
 
-a = -0.9
-b = 0.9
-step = 0.05
+    nums = []
+    print(f"Введите {n} целых чисел:")
+    while len(nums) < n:
+        line = input()
+        parts = list(map(int, line.split()))
+        nums.extend(parts)
 
-num_steps = int(round((b - a) / step)) + 1
+    max_sum = None
+    best_pos = -1  # Позиция первого элемента (1-индексация)
 
+    for i in range(n - 3):
+        window_sum = sum(nums[i:i+4])
+        if max_sum is None or window_sum > max_sum:
+            max_sum = window_sum
+            best_pos = i + 1  # Переводим в 1-индексацию
 
-print(f"{'x':>8} | {'y':>12}")
-print("-" * 23)
+    print(f"Наибольшая сумма из 4 подряд идущих чисел: {max_sum}")
+    print(f"Позиция первого элемента этой группы: {best_pos}")
 
-for i in range(num_steps):
-
-    x = a + i * step
-    
-
-    if -1 <= x <= 1:
-        # arccos^2(x) + arcsin^2(x)
-        acos_val = math.acos(x)
-        asin_val = math.asin(x)
-        numerator = acos_val**2 + asin_val**2
-        
-        # sin^2(1 + x^2) - cos^2(1 - x^2)
-        sin_arg = 1 + x**2
-        cos_arg = 1 - x**2
-        denominator = math.sin(sin_arg)**2 - math.cos(cos_arg)**2
-
-        if abs(denominator) > 1e-12:
-            y = numerator / denominator
-            print(f"{x:8.2f} | {y:12.5f}")
-        else:
-            print(f"{x:8.2f} | {'деление на 0':>12}")
-    else:
-        print(f"{x:8.2f} | {'x вне [-1,1]':>12}")
+# task2_with_list()

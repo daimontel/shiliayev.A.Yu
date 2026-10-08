@@ -1,26 +1,52 @@
-import math
 
-def calculate_y(x):
+def task1_with_list():
+    try:
+        n = int(input("Введите количество чисел N: "))
+        if n <= 0:
+            print("N должно быть положительным.")
+            return
+    except ValueError:
+        print("Ошибка ввода N.")
+        return
 
-    if x <= 0 or (2 - x) <= 0:
-        return "Ошибка: значение x выходит за пределы области определения функции."
-    x_to_x = x ** x                 # x^x
-    x_to_inv_x = x ** (1 / x)       # x^(1/x)
-    
-    # e^(x^x) * ln(2 + x^(1/x))
-    term1 = math.exp(x_to_x) * math.log(2 + x_to_inv_x)
-    
-    # 2^x * ln(2 - x)
-    term2 = (2 ** x) * math.log(2 - x)
-    
-    # -e^(2 / x^x)
-    term3 = -math.exp(2 / x_to_x)
-    
-    y = term1 + term2 + term3
-    return y
+    nums = []
+    print(f"Введите {n} целых чисел (каждое с новой строки или через пробел):")
+    # Читаем все числа, поддерживая ввод через пробел в одной строке
+    while len(nums) < n:
+        line = input()
+        parts = list(map(int, line.split()))
+        nums.extend(parts)
 
-x_value = int(input('ведите x = '))
-result = calculate_y(x_value)
+    max_len = 0
+    best_sum = 0
 
-print(f"При x = {x_value} значение функции y = {result:.5f}")
-print(f"Для сравнения: аналитическое решение e*ln(3) - e^2 ≈ {math.e * math.log(3) - math.e**2}")
+    i = 0
+    while i < n:
+        # Начало нового возрастающего участка
+        start = i
+        current_len = 1
+        current_sum = nums[i]
+
+        # Растём, пока следующее число строго больше текущего
+        while i + 1 < n and nums[i + 1] > nums[i]:
+            i += 1
+            current_len += 1
+            current_sum += nums[i]
+
+        # Обновляем лучший результат
+        if current_len > max_len:
+            max_len = current_len
+            best_sum = current_sum
+
+        i += 1  # Переход к следующему числу после участка
+
+    if max_len == 0 and n > 0:
+        # На случай, если все числа одинаковые или убывают — самый длинный участок длины 1
+        max_len = 1
+        best_sum = nums[0]
+
+    print(f"Максимальная длина строго возрастающего участка: {max_len}")
+    print(f"Сумма элементов этого участка: {best_sum}")
+
+
+
