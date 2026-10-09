@@ -16,8 +16,7 @@ def task2_with_list():
         nums.extend(parts)
 
     max_sum = None
-    best_pos = -1  # Позиция первого элемента (1-индексация)
-
+    best_pos = -1  
     for i in range(n - 3):
         window_sum = sum(nums[i:i+4])
         if max_sum is None or window_sum > max_sum:
