@@ -1,35 +1,28 @@
-import math
+def rle_encode(s: str) -> str:
+    if not s:
+        return ""
 
-a = -0.9
-b = 0.9
-step = 0.05
+    result = ""
+    count = 1
+    length = len(s)
 
-num_steps = int(round((b - a) / step)) + 1
-
-
-print(f"{'x':>8} | {'y':>12}")
-print("-" * 23)
-
-for i in range(num_steps):
-
-    x = a + i * step
-    
-
-    if -1 <= x <= 1:
-        # arccos^2(x) + arcsin^2(x)
-        acos_val = math.acos(x)
-        asin_val = math.asin(x)
-        numerator = acos_val**2 + asin_val**2
-        
-        # sin^2(1 + x^2) - cos^2(1 - x^2)
-        sin_arg = 1 + x**2
-        cos_arg = 1 - x**2
-        denominator = math.sin(sin_arg)**2 - math.cos(cos_arg)**2
-
-        if abs(denominator) > 1e-12:
-            y = numerator / denominator
-            print(f"{x:8.2f} | {y:12.5f}")
+    i = 1
+    while i < length:
+        if s[i] == s[i - 1]:
+            count += 1
         else:
-            print(f"{x:8.2f} | {'деление на 0':>12}")
-    else:
-        print(f"{x:8.2f} | {'x вне [-1,1]':>12}")
+            result += s[i - 1] + str(count)
+            count = 1
+        i += 1
+
+    # Добавляем последнюю группу
+    result += s[-1] + str(count)
+
+    return result
+
+
+# Примеры
+print(rle_encode("aaabbc"))   # a3b2c1
+print(rle_encode("abcd"))     # a1b1c1d1
+print(rle_encode("aaaa"))     # a4
+print(rle_encode(""))         # ""
