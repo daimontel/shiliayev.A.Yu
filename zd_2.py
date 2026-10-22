@@ -1,35 +1,58 @@
-import math
+def lps_length(s):
+    n = len(s)
+    if n == 0:
+        return 0
+    dp = [[0] * n for _ in range(n)]
+    for i in range(n):
+        dp[i][i] = 1
 
-a = -0.9
-b = 0.9
-step = 0.05
+    for length in range(2, n + 1):          # длина подстроки
+        for i in range(n - length + 1):
+            j = i + length - 1
+            if s[i] == s[j]:
+                dp[i][j] = dp[i + 1][j - 1] + 2 if length > 2 else 2
+            else:
+                dp[i][j] = max(dp[i + 1][j], dp[i][j - 1])
+    return dp[0][n - 1]
 
-num_steps = int(round((b - a) / step)) + 1
+
+def lps_string(s):
+
+    n = len(s)
+    if n == 0:
+        return ""
+    dp = [[0] * n for _ in range(n)]
+    for i in range(n):
+        dp[i][i] = 1
+
+    for length in range(2, n + 1):
+        for i in range(n - length + 1):
+            j = i + length - 1
+            if s[i] == s[j]:
+                dp[i][j] = dp[i + 1][j - 1] + 2 if length > 2 else 2
+            else:
+                dp[i][j] = max(dp[i + 1][j], dp[i][j - 1])
 
 
-print(f"{'x':>8} | {'y':>12}")
-print("-" * 23)
-
-for i in range(num_steps):
-
-    x = a + i * step
-    
-
-    if -1 <= x <= 1:
-        # arccos^2(x) + arcsin^2(x)
-        acos_val = math.acos(x)
-        asin_val = math.asin(x)
-        numerator = acos_val**2 + asin_val**2
-        
-        # sin^2(1 + x^2) - cos^2(1 - x^2)
-        sin_arg = 1 + x**2
-        cos_arg = 1 - x**2
-        denominator = math.sin(sin_arg)**2 - math.cos(cos_arg)**2
-
-        if abs(denominator) > 1e-12:
-            y = numerator / denominator
-            print(f"{x:8.2f} | {y:12.5f}")
+    left, right = [], []
+    i, j = 0, n - 1
+    while i <= j:
+        if i == j:
+            left.append(s[i])
+            break
+        if s[i] == s[j]:
+            left.append(s[i])
+            right.append(s[j])
+            i += 1
+            j -= 1
+        elif dp[i + 1][j] >= dp[i][j - 1]:
+            i += 1
         else:
-            print(f"{x:8.2f} | {'деление на 0':>12}")
-    else:
-        print(f"{x:8.2f} | {'x вне [-1,1]':>12}")
+            j -= 1
+    return "".join(left + right[::-1])
+
+
+# Проверка на примерах из условия
+if __name__ == "__main__":
+    for s in ["bbbab", "cbdb", "a", "", "abba", "abcde"]:
+        print(f"{s!r:8} -> длина {lps_length(s)}, LPS = {lps_string(s)!r}")
