@@ -1,35 +1,51 @@
-import math
+def transform(matrix, rule='max'):
 
-a = -0.9
-b = 0.9
-step = 0.05
+    n = len(matrix)
+    if n == 0:
+        return []
+    m = len(matrix[0])
 
-num_steps = int(round((b - a) / step)) + 1
+    # Создаём результирующую матрицу того же размера
+    result = [[0.0] * m for _ in range(n)]
+
+    for i in range(n):
+        for j in range(m):
+            # Собираем все элементы из прямоугольника
+            values = []
+            for r in range(i + 1):
+                for c in range(j + 1):
+                    values.append(matrix[r][c])
+
+            if rule == 'max':
+                result[i][j] = max(values)
+            elif rule == 'min':
+                result[i][j] = min(values)
+            elif rule == 'avg':
+                s = sum(values)
+                result[i][j] = s / len(values) if len(values) > 0 else 0.0
+            elif rule == 'sum':
+                result[i][j] = sum(values)
+            else:
+                raise ValueError("Неизвестное правило: {}".format(rule))
+
+    return result
 
 
-print(f"{'x':>8} | {'y':>12}")
-print("-" * 23)
 
-for i in range(num_steps):
+if __name__ == "__main__":
+    # Ввод двумерного массива: сначала n, m, потом n строк по m чисел
+    n, m = map(int, input("Введите размеры массива n m: ").split())
+    matrix = []
+    print("Введите элементы матрицы (по строкам, числа через пробел):")
+    for _ in range(n):
+        row = [float(x) for x in input().split()]
+        if len(row) != m:
+            raise ValueError("Количество элементов в строке не совпадает с m")
+        matrix.append(row)
 
-    x = a + i * step
-    
-
-    if -1 <= x <= 1:
-        # arccos^2(x) + arcsin^2(x)
-        acos_val = math.acos(x)
-        asin_val = math.asin(x)
-        numerator = acos_val**2 + asin_val**2
-        
-        # sin^2(1 + x^2) - cos^2(1 - x^2)
-        sin_arg = 1 + x**2
-        cos_arg = 1 - x**2
-        denominator = math.sin(sin_arg)**2 - math.cos(cos_arg)**2
-
-        if abs(denominator) > 1e-12:
-            y = numerator / denominator
-            print(f"{x:8.2f} | {y:12.5f}")
-        else:
-            print(f"{x:8.2f} | {'деление на 0':>12}")
-    else:
-        print(f"{x:8.2f} | {'x вне [-1,1]':>12}")
+    rules = ['max', 'min', 'avg', 'sum']
+    for r in rules:
+        transformed = transform(matrix, r)
+        print(f"\nПравило '{r}':")
+        for row in transformed:
+            print(" ".join("{:.2f}".format(x) for x in row))
