@@ -1,26 +1,30 @@
-import math
+def product_in_range(arr, x, y):
+    # Убедимся, что x <= y (если пользователь перепутал порядок)
+    left, right = min(x, y), max(x, y)
 
-def calculate_y(x):
+    product = 1.0
+    found = False
 
-    if x <= 0 or (2 - x) <= 0:
-        return "Ошибка: значение x выходит за пределы области определения функции."
-    x_to_x = x ** x                 # x^x
-    x_to_inv_x = x ** (1 / x)       # x^(1/x)
-    
-    # e^(x^x) * ln(2 + x^(1/x))
-    term1 = math.exp(x_to_x) * math.log(2 + x_to_inv_x)
-    
-    # 2^x * ln(2 - x)
-    term2 = (2 ** x) * math.log(2 - x)
-    
-    # -e^(2 / x^x)
-    term3 = -math.exp(2 / x_to_x)
-    
-    y = term1 + term2 + term3
-    return y
+    for value in arr:
+        if left <= value <= right:
+            product *= value
+            found = True
 
-x_value = int(input('ведите x = '))
-result = calculate_y(x_value)
+    if not found:
+        print("Нет элементов в отрезке [{}, {}].".format(left, right))
+        return 1.0
 
-print(f"При x = {x_value} значение функции y = {result:.5f}")
-print(f"Для сравнения: аналитическое решение e*ln(3) - e^2 ≈ {math.e * math.log(3) - math.e**2}")
+    return product
+
+
+
+if __name__ == "__main__":
+    # Ввод массива как строки чисел через пробел
+    arr_input = input("Введите элементы массива (через пробел): ")
+    arr = [float(x) for x in arr_input.split()]
+
+    x = float(input("Введите X: "))
+    y = float(input("Введите Y: "))
+
+    result = product_in_range(arr, x, y)
+    print("Произведение элементов в отрезке:", result)
